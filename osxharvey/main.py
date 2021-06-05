@@ -30,10 +30,20 @@ class OsxHarvey:
     verbose = None
     pbar = None
 
-    def __init__(self, iface="en0", rounds=1, ch_from=1, ch_to=15, devices=False, ssids=False, probes=False,
-                 vendors=False, verbose=False,
-                 debug=False):
-        '''
+    def __init__(
+        self,
+        iface="en0",
+        rounds=1,
+        ch_from=1,
+        ch_to=15,
+        devices=False,
+        ssids=False,
+        probes=False,
+        vendors=False,
+        verbose=False,
+        debug=False,
+    ):
+        """
         Initializes an instance of the sniffer
 
         :param str iface: Interface to sniff on
@@ -46,20 +56,55 @@ class OsxHarvey:
         :param bool vendors: Write list of unique detected vendors to file
         :param bool verbose: Toggles verbose output
         :param bool debug: Toggles debug mode
-        '''
+        """
         if os.geteuid() != 0:
-            sys.exit("[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run.")
+            sys.exit(
+                "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
+            )
         if len(sys.argv) > 1:
             ap = argparse.ArgumentParser()
-            ap.add_argument("-i", "--iface", required=True, help="interface to sniff on")
-            ap.add_argument("-r", "--rounds", required=True, help="how many rounds of scanning through the channels")
-            ap.add_argument("-cf", "--channel_from", required=True, help="wifi channel to start scanning on")
-            ap.add_argument("-ct", "--channel_to", required=True, help="wifi channel to end scanning on")
-            ap.add_argument("-d", "--devices", required=False, help="print detected devices to file")
-            ap.add_argument("-s", "--ssids", required=False, help="print detected ssids to file")
-            ap.add_argument("-p", "--probes", required=False, help="print caught probe requests to file")
-            ap.add_argument("-vd", "--vendors", required=False, help="print all identified vendors to file")
-            ap.add_argument("-v", "--verbose", required=False, help="toggle verbose output")
+            ap.add_argument(
+                "-i", "--iface", required=True, help="interface to sniff on"
+            )
+            ap.add_argument(
+                "-r",
+                "--rounds",
+                required=True,
+                help="how many rounds of scanning through the channels",
+            )
+            ap.add_argument(
+                "-cf",
+                "--channel_from",
+                required=True,
+                help="wifi channel to start scanning on",
+            )
+            ap.add_argument(
+                "-ct",
+                "--channel_to",
+                required=True,
+                help="wifi channel to end scanning on",
+            )
+            ap.add_argument(
+                "-d", "--devices", required=False, help="print detected devices to file"
+            )
+            ap.add_argument(
+                "-s", "--ssids", required=False, help="print detected ssids to file"
+            )
+            ap.add_argument(
+                "-p",
+                "--probes",
+                required=False,
+                help="print caught probe requests to file",
+            )
+            ap.add_argument(
+                "-vd",
+                "--vendors",
+                required=False,
+                help="print all identified vendors to file",
+            )
+            ap.add_argument(
+                "-v", "--verbose", required=False, help="toggle verbose output"
+            )
             args = vars(ap.parse_args())
             self.__parse_cl_args(args)
         else:
@@ -76,8 +121,10 @@ class OsxHarvey:
         self.__set_loglevel()
         self.__init_logger()
         if verbose:
+
             def verboseprint(*args, **kwargs):
                 print(*args, **kwargs)
+
         else:
             verboseprint = lambda *a: None
         self.verboseprint = verboseprint
@@ -97,8 +144,11 @@ class OsxHarvey:
         Initializes the logger
         """
         handler = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("[osxharvey] {asctime} - {levelname}: {message}", "%d.%m.%Y %H:%M:%S",
-                                style="{")
+        frm = logging.Formatter(
+            "[osxharvey] {asctime} - {levelname}: {message}",
+            "%d.%m.%Y %H:%M:%S",
+            style="{",
+        )
         handler.setFormatter(frm)
         handler.setLevel(self.loglevel)
         self.logger = logging.getLogger()
@@ -116,7 +166,9 @@ class OsxHarvey:
         self.ch_from = int(args["channel_from"])
         self.ch_to = int(args["channel_to"])
         if self.ch_to <= self.ch_from:
-            self.logger.error("The value of --channel_to needs to be higher then the value of --channel_from")
+            self.logger.error(
+                "The value of --channel_to needs to be higher then the value of --channel_from"
+            )
             sys.exit(0)
         self.devices = bool(args["devices"])
         self.ssids = bool(args["ssids"])
@@ -176,7 +228,9 @@ class OsxHarvey:
                     with open("../devices.txt", "a") as file:
                         file.write(f"{vendor}\n")
                 if self.verbose:
-                    self.__print_over_pbar(f"[+] New Vendor/Device Combination: {vendor}")
+                    self.__print_over_pbar(
+                        f"[+] New Vendor/Device Combination: {vendor}"
+                    )
                 vendor_list.append(vendor)
 
     def __scan_Dot11ProbeReq(self, pkt):
@@ -187,7 +241,7 @@ class OsxHarvey:
         :param pkt: Packet with Dot11ProbeRequest layer
         :return:
         """
-        netName = pkt.getlayer(Dot11ProbeReq).info.decode('utf-8')
+        netName = pkt.getlayer(Dot11ProbeReq).info.decode("utf-8")
         wifiMAC = None
         if pkt.haslayer(Dot11):
             wifiMAC = pkt.getlayer(Dot11).addr2
@@ -195,15 +249,17 @@ class OsxHarvey:
             probe_req.append(netName)
             if wifiMAC is not None:
                 if self.verbose:
-                    self.__print_over_pbar(f"[+] Detected new probe request: {netName} from {wifiMAC}")
+                    self.__print_over_pbar(
+                        f"[+] Detected new probe request: {netName} from {wifiMAC}"
+                    )
                 if self.probes:
-                    with open('../probes.txt', 'a') as probefile:
+                    with open("../probes.txt", "a") as probefile:
                         probefile.write(f"{wifiMAC} -> {netName}\n")
             else:
                 if self.verbose:
                     self.__print_over_pbar(f"[+] Detected new probe request: {netName}")
                 if self.probes:
-                    with open('../probes.txt', 'a') as probefile:
+                    with open("../probes.txt", "a") as probefile:
                         probefile.write(f"unknown -> {netName}\n")
 
     def __scan_Dot11ProbeResp(self, pkt):
@@ -215,11 +271,13 @@ class OsxHarvey:
         """
         addr2 = pkt.getlayer(Dot11).addr2
         if (addr2 in hiddenNets) and (addr2 not in unhiddenNets):
-            netName = pkt.getlayer(Dot11ProbeResp).info.decode('utf-8')
+            netName = pkt.getlayer(Dot11ProbeResp).info.decode("utf-8")
             if self.verbose:
-                self.__print_over_pbar(f"[+] Decloaked hidden SSID {netName} with MAC {addr2}")
+                self.__print_over_pbar(
+                    f"[+] Decloaked hidden SSID {netName} with MAC {addr2}"
+                )
             if self.ssids:
-                with open('decloaked.txt', 'a') as decloaked_file:
+                with open("decloaked.txt", "a") as decloaked_file:
                     decloaked_file.write(f"{netName} -> {addr2}\n")
             unhiddenNets.append(addr2)
 
@@ -231,22 +289,22 @@ class OsxHarvey:
         :param pkt: Packet with Dot11Beacon frame
         :return:
         """
-        ssid_info = pkt.getlayer(Dot11Beacon).info.decode('utf-8')
+        ssid_info = pkt.getlayer(Dot11Beacon).info.decode("utf-8")
         if ssid_info not in ssids:
             addr2 = pkt.getlayer(Dot11).addr2
             if self.verbose:
                 self.__print_over_pbar(f"[+] Found new SSID {ssid_info} -> {addr2}")
             if self.ssids:
-                with open('../ssids.txt', 'a') as ssidsf:
+                with open("../ssids.txt", "a") as ssidsf:
                     ssidsf.write(f"{ssid_info} -> {addr2}\n")
             ssids.append(ssid_info)
-        if pkt.getlayer(Dot11Beacon).info.decode('utf-8') == '':
+        if pkt.getlayer(Dot11Beacon).info.decode("utf-8") == "":
             addr2 = pkt.getlayer(Dot11).addr2
             if addr2 not in hiddenNets:
                 if self.verbose:
                     self.__print_over_pbar(f"[+] Found hidden SSID with MAC: {addr2}")
                 if self.ssids:
-                    with open('../ssids.txt', 'a') as ssid_file:
+                    with open("../ssids.txt", "a") as ssid_file:
                         ssid_file.write(f"HIDDEN -> {addr2}\n")
                 hiddenNets.append(addr2)
 
@@ -271,21 +329,38 @@ class OsxHarvey:
         :return: Dictionary with collected data
         """
         try:
-            os.system(f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"
-                      f"/Resources/airport -z")
+            os.system(
+                f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"
+                f"/Resources/airport -z"
+            )
             self.verboseprint(
-                f"[*] Starting scanning: {self.rounds} rounds through {self.ch_to - self.ch_from} Wifi channels\n")
+                f"[*] Starting scanning: {self.rounds} rounds through {self.ch_to - self.ch_from} Wifi channels\n"
+            )
             for rounds in range(self.rounds):
 
-                self.pbar = tqdm(range(self.ch_from, self.ch_to), desc=f"Round {rounds + 1}/{self.rounds}: ",
-                                 leave=False)
+                self.pbar = tqdm(
+                    range(self.ch_from, self.ch_to),
+                    desc=f"Round {rounds + 1}/{self.rounds}: ",
+                    leave=False,
+                )
                 for channel in self.pbar:
-                    os.system(f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"
-                              f"/Resources/airport -c{channel}")
+                    os.system(
+                        f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"
+                        f"/Resources/airport -c{channel}"
+                    )
                     try:
                         if self.verbose:
-                            self.__print_over_pbar(f"[*] Round {rounds + 1}: Sniffing on Channel {channel}")
-                        sniff(iface=self.iface, monitor=True, prn=self.__pktIdentifier, count=10, timeout=3, store=0)
+                            self.__print_over_pbar(
+                                f"[*] Round {rounds + 1}: Sniffing on Channel {channel}"
+                            )
+                        sniff(
+                            iface=self.iface,
+                            monitor=True,
+                            prn=self.__pktIdentifier,
+                            count=10,
+                            timeout=3,
+                            store=0,
+                        )
                     except Exception as e:
                         self.logger.error(f"[!!] Something has gone wrong: {str(e)}")
         except Exception as e:
@@ -293,8 +368,13 @@ class OsxHarvey:
         if self.vendors:
             self.__write_vendors()
         self.__cleanup()
-        return {'vendors': vendor_list, 'probes': probe_req, 'hidden_ssids': hiddenNets,
-                'decloaked_ssids': unhiddenNets, 'ssids': ssids}
+        return {
+            "vendors": vendor_list,
+            "probes": probe_req,
+            "hidden_ssids": hiddenNets,
+            "decloaked_ssids": unhiddenNets,
+            "ssids": ssids,
+        }
 
     def __write_vendors(self):
         """
@@ -302,7 +382,7 @@ class OsxHarvey:
 
         :return:
         """
-        with open('../vendors.txt', 'w') as vendor_file:
+        with open("../vendors.txt", "w") as vendor_file:
             for mac_vendor_list in vendor_list:
                 for mac_vendor in mac_vendor_list:
                     for mac in mac_vendor:
@@ -315,14 +395,14 @@ class OsxHarvey:
 
         :return:
         """
-        self.__ensure_unique("../vendors.txt")
-        self.__ensure_unique("../devices.txt")
-        self.__ensure_unique("../probes.txt")
+        self.__ensure_unique("vendors.txt")
+        self.__ensure_unique("devices.txt")
+        self.__ensure_unique("probes.txt")
         self.__ensure_unique("decloaked.txt")
-        self.__ensure_unique("../ssids.txt")
+        self.__ensure_unique("ssids.txt")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bigwhiterabbit = OsxHarvey(verbose=True)
     result = bigwhiterabbit.start_scanning()
     # print(result[0])
