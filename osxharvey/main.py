@@ -47,6 +47,8 @@ class OsxHarvey:
         :param bool verbose: Toggles verbose output
         :param bool debug: Toggles debug mode
         '''
+        if os.geteuid() != 0:
+            sys.exit("[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run.")
         if len(sys.argv) > 1:
             ap = argparse.ArgumentParser()
             ap.add_argument("-i", "--iface", required=True, help="interface to sniff on")
@@ -171,7 +173,7 @@ class OsxHarvey:
             vendor = OuiLookup().query(wifiMAC)
             if vendor not in vendor_list:
                 if self.devices:
-                    with open("devices.txt", "a") as file:
+                    with open("../devices.txt", "a") as file:
                         file.write(f"{vendor}\n")
                 if self.verbose:
                     self.__print_over_pbar(f"[+] New Vendor/Device Combination: {vendor}")
@@ -195,13 +197,13 @@ class OsxHarvey:
                 if self.verbose:
                     self.__print_over_pbar(f"[+] Detected new probe request: {netName} from {wifiMAC}")
                 if self.probes:
-                    with open('probes.txt', 'a') as probefile:
+                    with open('../probes.txt', 'a') as probefile:
                         probefile.write(f"{wifiMAC} -> {netName}\n")
             else:
                 if self.verbose:
                     self.__print_over_pbar(f"[+] Detected new probe request: {netName}")
                 if self.probes:
-                    with open('probes.txt', 'a') as probefile:
+                    with open('../probes.txt', 'a') as probefile:
                         probefile.write(f"unknown -> {netName}\n")
 
     def __scan_Dot11ProbeResp(self, pkt):
@@ -235,7 +237,7 @@ class OsxHarvey:
             if self.verbose:
                 self.__print_over_pbar(f"[+] Found new SSID {ssid_info} -> {addr2}")
             if self.ssids:
-                with open('ssids.txt', 'a') as ssidsf:
+                with open('../ssids.txt', 'a') as ssidsf:
                     ssidsf.write(f"{ssid_info} -> {addr2}\n")
             ssids.append(ssid_info)
         if pkt.getlayer(Dot11Beacon).info.decode('utf-8') == '':
@@ -244,7 +246,7 @@ class OsxHarvey:
                 if self.verbose:
                     self.__print_over_pbar(f"[+] Found hidden SSID with MAC: {addr2}")
                 if self.ssids:
-                    with open('ssids.txt', 'a') as ssid_file:
+                    with open('../ssids.txt', 'a') as ssid_file:
                         ssid_file.write(f"HIDDEN -> {addr2}\n")
                 hiddenNets.append(addr2)
 
@@ -300,7 +302,7 @@ class OsxHarvey:
 
         :return:
         """
-        with open('vendors.txt', 'w') as vendor_file:
+        with open('../vendors.txt', 'w') as vendor_file:
             for mac_vendor_list in vendor_list:
                 for mac_vendor in mac_vendor_list:
                     for mac in mac_vendor:
@@ -313,14 +315,14 @@ class OsxHarvey:
 
         :return:
         """
-        self.__ensure_unique("vendors.txt")
-        self.__ensure_unique("devices.txt")
-        self.__ensure_unique("probes.txt")
+        self.__ensure_unique("../vendors.txt")
+        self.__ensure_unique("../devices.txt")
+        self.__ensure_unique("../probes.txt")
         self.__ensure_unique("decloaked.txt")
-        self.__ensure_unique("ssids.txt")
+        self.__ensure_unique("../ssids.txt")
 
 
 if __name__ == '__main__':
-    bigwhiterabbit = OsxHarvey(rounds=2, verbose=False)
+    bigwhiterabbit = OsxHarvey(verbose=True)
     result = bigwhiterabbit.start_scanning()
     # print(result[0])

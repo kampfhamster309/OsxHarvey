@@ -1,0 +1,6 @@
+include README.md
+include LICENSE.md
+graft osxharvey
+recursive-exclude * *.py[co]
+include versioneer.py
+include osxharvey/_version.py
