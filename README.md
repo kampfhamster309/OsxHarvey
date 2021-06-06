@@ -11,13 +11,17 @@ Harvey is intended to be used by security professionals for LEGAL purposes.
 
 ## This package is in pre-Alpha and therefore still under construction
 
-# Installation:
+### Requirements:
+
+OsxHarvey is tested and built on Python3.9 and macOS Big Sur, it uses scapy under the hood and needs to be run with sudo privileges.
+
+### Installation:
 
 ```commandline
 pip install osxharvey
 ```
 
-# Usage:
+### Usage:
 
 ```python
 from osxharvey import OsxHarvey
@@ -55,7 +59,7 @@ results = bwr.start_scanning()
 ## TODO:
 * Enable installation as command line tool (WIP)
 * Expand testing
-  * Setup automated testing though github
+  * ~~Setup automated testing through github~
 * Extend functionality
 * Generate proper documentation
 * Think about GUI
