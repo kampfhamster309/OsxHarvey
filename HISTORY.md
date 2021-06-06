@@ -1,6 +1,37 @@
 # Changelog
 
 
+## 0.0.6 (2021-06-06)
+
+### New
+
+* Added tests for packet parser. [kampfhamster309]
+
+* Added actually useful info to README. [kampfhamster309]
+
+* Added automated changelog. [kampfhamster309]
+
+### Changes
+
+* Some minor changes to README. [kampfhamster309]
+
+* Added README and LICENSE. [kampfhamster309]
+
+### Fix
+
+* Fixed refactoring bug. [kampfhamster309]
+
+* Fixed bug with writing collected data to files. [kampfhamster309]
+
+### Other
+
+* Changelog updated. [kampfhamster309]
+
+* Updated changelog. [kampfhamster309]
+
+* Modified gitchangelog. [kampfhamster309]
+
+
 ## 0.0.5 (2021-06-06)
 
 ### New
