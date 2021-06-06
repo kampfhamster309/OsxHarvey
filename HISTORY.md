@@ -1,7 +1,14 @@
 # Changelog
 
 
-## (unreleased)
+## 0.0.4 (2021-06-06)
+
+### New
+
+* Added actually useful info to README. [kampfhamster309]
+
+
+## 0.0.3 (2021-06-05)
 
 ### Changes
 
