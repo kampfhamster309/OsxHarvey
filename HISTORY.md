@@ -1,15 +1,30 @@
 # Changelog
 
+## 0.0.7 (2021-06-06)
+
+### Changes
+
+* Added state badge to README. [kampfhamster309]
+
+* Added workflow for automated testing. [kampfhamster309]
+
+* Added requirements to setup github actions for automated testing. [kampfhamster309]
+
+### Fix
+
+* Wip Temporarily removed check for privileges. [kampfhamster309]
+
+* Some small fixes for running Github Actions. [kampfhamster309]
+
+* Fixed refactoring bug. [kampfhamster309]
+
+* Fixed bug with writing collected data to files. [kampfhamster309]
+
+### Other
+
+* Modified gitchangelog. [kampfhamster309]
 
 ## 0.0.6 (2021-06-06)
-
-### New
-
-* Added tests for packet parser. [kampfhamster309]
-
-* Added actually useful info to README. [kampfhamster309]
-
-* Added automated changelog. [kampfhamster309]
 
 ### Changes
 
@@ -65,7 +80,7 @@
 
 ### Other
 
-* 'new' Added automated changelog. [kampfhamster309]
+* Added automated changelog. [kampfhamster309]
 
 * Applied black. [kampfhamster309]
 
