@@ -57,57 +57,11 @@ class OsxHarvey:
         :param bool verbose: Toggles verbose output
         :param bool debug: Toggles debug mode
         """
-        if os.geteuid() != 0:
-            sys.exit(
-                "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
-            )
-        # if len(sys.argv) > 1:
-        #     ap = argparse.ArgumentParser()
-        #     ap.add_argument(
-        #         "-i", "--iface", required=True, help="interface to sniff on"
+        # if os.geteuid() != 0:
+        #     sys.exit(
+        #         "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
         #     )
-        #     ap.add_argument(
-        #         "-r",
-        #         "--rounds",
-        #         required=True,
-        #         help="how many rounds of scanning through the channels",
-        #     )
-        #     ap.add_argument(
-        #         "-cf",
-        #         "--channel_from",
-        #         required=True,
-        #         help="wifi channel to start scanning on",
-        #     )
-        #     ap.add_argument(
-        #         "-ct",
-        #         "--channel_to",
-        #         required=True,
-        #         help="wifi channel to end scanning on",
-        #     )
-        #     ap.add_argument(
-        #         "-d", "--devices", required=False, help="print detected devices to file"
-        #     )
-        #     ap.add_argument(
-        #         "-s", "--ssids", required=False, help="print detected ssids to file"
-        #     )
-        #     ap.add_argument(
-        #         "-p",
-        #         "--probes",
-        #         required=False,
-        #         help="print caught probe requests to file",
-        #     )
-        #     ap.add_argument(
-        #         "-vd",
-        #         "--vendors",
-        #         required=False,
-        #         help="print all identified vendors to file",
-        #     )
-        #     ap.add_argument(
-        #         "-v", "--verbose", required=False, help="toggle verbose output"
-        #     )
-        #     args = vars(ap.parse_args())
-        #     self.__parse_cl_args(args)
-        # else:
+
         self.iface = iface
         self.rounds = rounds
         self.ch_from = ch_from
