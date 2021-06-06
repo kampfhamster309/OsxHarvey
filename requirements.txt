@@ -1,0 +1,3 @@
+ouilookup==0.2.4
+scapy==2.4.5
+tqdm==4.61.0
