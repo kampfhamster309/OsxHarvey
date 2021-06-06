@@ -9,6 +9,12 @@ Harvey is intended to be used by security professionals for LEGAL purposes.
 
 ## This package is in pre-Alpha and therefore still under construction
 
+# Installation:
+
+```commandline
+pip install osxharvey
+```
+
 # Usage:
 
 ```python
