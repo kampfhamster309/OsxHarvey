@@ -357,7 +357,7 @@ class OsxHarvey:
                         sniff(
                             iface=self.iface,
                             monitor=True,
-                            prn=self.__pktIdentifier,
+                            prn=self.pktIdentifier,
                             count=10,
                             timeout=3,
                             store=0,
