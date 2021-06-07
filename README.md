@@ -26,6 +26,15 @@ pip install osxharvey
 
 ### Usage:
 
+OsxHarvey can either be used in code or from the command line.
+
+#### CLI:
+```commandline
+osxharvey
+```
+
+#### Code:
+
 ```python
 from osxharvey import OsxHarvey
 
@@ -60,7 +69,7 @@ results = bwr.start_scanning()
 ```
 
 ## TODO:
-* Enable installation as command line tool (WIP)
+* ~~Enable installation as command line tool~
 * Expand testing
   * ~~Setup automated testing through github~~
 * Extend functionality

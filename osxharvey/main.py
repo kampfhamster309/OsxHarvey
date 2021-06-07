@@ -7,8 +7,7 @@ import time
 import os
 import sys
 import logging
-
-
+import platform
 
 
 class OsxHarvey:
@@ -31,17 +30,17 @@ class OsxHarvey:
     ssids_list = []
 
     def __init__(
-        self,
-        iface="en0",
-        rounds=1,
-        ch_from=1,
-        ch_to=15,
-        devices=False,
-        ssids=False,
-        probes=False,
-        vendors=False,
-        verbose=False,
-        debug=False,
+            self,
+            iface="en0",
+            rounds=1,
+            ch_from=1,
+            ch_to=15,
+            devices=False,
+            ssids=False,
+            probes=False,
+            vendors=False,
+            verbose=False,
+            debug=False,
     ):
         """
         Initializes an instance of the sniffer
@@ -57,10 +56,6 @@ class OsxHarvey:
         :param bool verbose: Toggles verbose output
         :param bool debug: Toggles debug mode
         """
-        # if os.geteuid() != 0:
-        #     sys.exit(
-        #         "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
-        #     )
 
         self.iface = iface
         self.rounds = rounds
@@ -107,28 +102,6 @@ class OsxHarvey:
         handler.setLevel(self.loglevel)
         self.logger = logging.getLogger()
         self.logger.addHandler(handler)
-
-    def __parse_cl_args(self, args):
-        """
-        Parses command line args
-
-        :param args: Collection of command line args
-        :return:
-        """
-        self.iface = str(args["iface"])
-        self.rounds = int(args["rounds"])
-        self.ch_from = int(args["channel_from"])
-        self.ch_to = int(args["channel_to"])
-        if self.ch_to <= self.ch_from:
-            self.logger.error(
-                "The value of --channel_to needs to be higher then the value of --channel_from"
-            )
-            sys.exit(0)
-        self.devices = bool(args["devices"])
-        self.ssids = bool(args["ssids"])
-        self.probes = bool(args["probes"])
-        self.vendors = bool(args["vendors"])
-        self.verbose = bool(args["verbose"])
 
     def __ensure_unique(self, filename):
         """
@@ -243,7 +216,7 @@ class OsxHarvey:
         :param pkt: Packet with Dot11Beacon frame
         :return:
         """
-        ssid_info = pkt.getlayer(Dot11Beacon).info.decode("utf-8", errors="ignore",)
+        ssid_info = pkt.getlayer(Dot11Beacon).info.decode("utf-8", errors="ignore", )
         if ssid_info not in self.ssids_list:
             addr2 = pkt.getlayer(Dot11).addr2
             if self.verbose:
@@ -282,6 +255,12 @@ class OsxHarvey:
 
         :return: Dictionary with collected data
         """
+        if platform.system() != "Darwin":
+            sys.exit("[!!] OsxHarvey only runs on Mac! Aborting...")
+        if os.geteuid() != 0:
+            sys.exit(
+                "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
+            )
         try:
             os.system(
                 f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"
@@ -355,8 +334,3 @@ class OsxHarvey:
         self.__ensure_unique("decloaked.txt")
         self.__ensure_unique("ssids.txt")
 
-
-if __name__ == "__main__":
-    bigwhiterabbit = OsxHarvey(verbose=True)
-    result = bigwhiterabbit.start_scanning()
-    # print(result[0])

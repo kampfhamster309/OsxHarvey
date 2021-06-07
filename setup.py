@@ -34,6 +34,10 @@ setup_args = dict(
         "Programming Language :: Python :: 3",
         "Topic :: Security",
     ],
+    entry_points='''
+        [console_scripts]
+        osxharvey=osxharvey.__main__:main
+    '''
 )
 
 install_requires = [
