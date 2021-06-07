@@ -1,4 +1,7 @@
-![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/python-app.yml/badge.svg?branch=main)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q24VZ2M)
+
+
+![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/python-app.yml/badge.svg?branch=main) 
 
 # OsxHarvey 
 
