@@ -69,7 +69,7 @@ results = bwr.start_scanning()
 ```
 
 ## TODO:
-* ~~Enable installation as command line tool~
+* ~~Enable installation as command line tool~~
 * Expand testing
   * ~~Setup automated testing through github~~
 * Extend functionality
