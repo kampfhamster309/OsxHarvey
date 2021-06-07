@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.0.8 (2021-06-07)
+
+### New
+
+* OsxHarvey can now be used from the CLI. [kampfhamster309]
+
+### Changes
+
+* Minor changes to Readme. [kampfhamster309]
+
+* Small fixes/additions to Changelog and Readme. [kampfhamster309]
+
+### Other
+
+* Create FUNDING.yml. [Felix Harenbrock]
+
+* Delete custom.md. [Felix Harenbrock]
+
+* Update issue templates. [Felix Harenbrock]
+
 ## 0.0.7 (2021-06-06)
 
 ### Changes
