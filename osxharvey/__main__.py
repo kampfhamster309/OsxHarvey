@@ -14,6 +14,7 @@ def main(args=None):
     print(harvey)
     print("=" * 70)
     print("[*] First, we'll need to configure some things:")
+    update = str(input("[*] Update oui lookup data (no need to run this evey time) [y/N]: ") or "N")
     iface = str(input("[*] Interface to sniff on [en0]: ") or "en0")
     ch_from = int(input("[*] Wifi channel to start on [1]: ") or 1)
     ch_to = int(input("[*] Wifi channel to end sniffing on [15]: ") or 15)
@@ -50,13 +51,19 @@ def main(args=None):
     elif vendors.lower() == "n":
         vendors = False
     else:
-        sys.exit("[!!] Invalid value for vendors. Please enter eiter 'y' or 'n'")
+        sys.exit("[!!] Invalid value for vendors. Please enter either 'y' or 'n'")
 
     bwr = OsxHarvey(iface=iface, rounds=rounds,
                     ch_from=ch_from, ch_to=ch_to,
                     devices=devices, ssids=ssids,
                     probes=probes, vendors=vendors, verbose=verbose)
 
+    if update.lower() == "y":
+        bwr.update_ouilookup_data()
+    elif update.lower() == "n":
+        bwr.logger.debug("Not updating oui lookup data")
+    else:
+        sys.exit("[!!] Invalid value for update. Please enter either 'y' or 'n'")
     bwr.start_scanning()
 
 

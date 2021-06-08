@@ -66,6 +66,9 @@ bwr = OsxHarvey(
 # returns a dictionary with the collected data
 results = bwr.start_scanning()
 
+# Updates oui lookup data:
+bwr.update_ouilookup_data()
+
 ```
 
 ## TODO:

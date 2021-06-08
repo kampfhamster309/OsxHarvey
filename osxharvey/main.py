@@ -322,6 +322,16 @@ class OsxHarvey:
                         if mac_vendor[mac] is not None:
                             vendor_file.write(mac_vendor[mac] + "\n")
 
+    def update_ouilookup_data(self):
+        """
+        Updates new oui lookup data from standards-oui.iee.org.
+        It's not necessary to run this every time osxharvey is used, but should be run
+        on occasion.
+        """
+        self.verboseprint("[*] Updating lookup data...")
+        OuiLookup().update()
+        self.verboseprint("[+] Successfully updated oui lookup data")
+
     def __cleanup(self):
         """
         Performs cleanup operations after successful scan
