@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.9 (2021-06-08)
+
+### New
+
+* Added function to update the oui lookup data. [kampfhamster309]
+
+### Other
+
+* Fixed markdown mistake. [kampfhamster309]
+
 ## 0.0.8 (2021-06-07)
 
 ### New
