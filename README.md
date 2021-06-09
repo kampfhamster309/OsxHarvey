@@ -1,7 +1,7 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q24VZ2M)
 
 
-![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/python-app.yml/badge.svg?branch=main) ![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/codeql-analysis.yml/badge.svg?branch=main) 
+![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/python-app.yml/badge.svg?branch=main) ![example branch parameter](https://github.com/kampfhamster309/osxharvey/actions/workflows/codeql-analysis.yml/badge.svg?branch=main) ![PyPI - Downloads](https://img.shields.io/pypi/dm/osxharvey?label=PyPi%20downloads&style=plastic)
 
 # OsxHarvey 
 
