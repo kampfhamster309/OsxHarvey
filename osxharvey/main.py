@@ -243,7 +243,7 @@ class OsxHarvey:
         :return:
         """
         if self.pbar is not None:
-            border = "=" * 50
+            border = "=" * 70
             clear_border = _term_move_up() + "\r" + " " * len(border) + "\r"
             self.pbar.write(clear_border + message)
             self.pbar.write(border)
