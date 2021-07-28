@@ -1,6 +1,10 @@
+from typing import List
+
 from scapy.all import sniff
+from scapy.compat import Union
 from scapy.layers.dot11 import Dot11Beacon, Dot11ProbeReq, Dot11, Dot11ProbeResp
 from OuiLookup import OuiLookup
+from scapy.packet import Packet
 from tqdm import tqdm
 from tqdm.utils import _term_move_up
 import time
@@ -11,36 +15,36 @@ import platform
 
 
 class OsxHarvey:
-    logger = None
-    loglevel = None
-    ch_from = None
-    ch_to = None
-    devices = None
-    ssids = None
-    probes = None
-    vendors = None
-    debug = None
-    iface = None
-    verbose = None
-    pbar = None
-    vendor_list = []
-    probe_req = []
-    hiddenNets = []
-    unhiddenNets = []
-    ssids_list = []
+    logger: logging.Logger = None
+    loglevel: int = None
+    ch_from: int = None
+    ch_to: int = None
+    devices: bool = None
+    ssids: bool = None
+    probes: bool = None
+    vendors: bool = None
+    debug: bool = None
+    iface: str = None
+    verbose: bool = None
+    pbar: tqdm = None
+    vendor_list: List = []
+    probe_req: List = []
+    hiddenNets: List = []
+    unhiddenNets: List = []
+    ssids_list: List = []
 
     def __init__(
             self,
-            iface="en0",
-            rounds=1,
-            ch_from=1,
-            ch_to=15,
-            devices=False,
-            ssids=False,
-            probes=False,
-            vendors=False,
-            verbose=False,
-            debug=False,
+            iface: str = "en0",
+            rounds: int = 1,
+            ch_from: int = 1,
+            ch_to: int = 15,
+            devices: bool = False,
+            ssids: bool = False,
+            probes: bool = False,
+            vendors: bool = False,
+            verbose: bool = False,
+            debug: bool = False,
     ):
         """
         Initializes an instance of the sniffer
@@ -71,7 +75,7 @@ class OsxHarvey:
         self.__init_logger()
         if verbose:
 
-            def verboseprint(*args, **kwargs):
+            def verboseprint(*args, **kwargs) -> None:
                 print(*args, **kwargs)
 
         else:
@@ -79,7 +83,7 @@ class OsxHarvey:
         self.verboseprint = verboseprint
         self.ch_to += 1
 
-    def __set_loglevel(self):
+    def __set_loglevel(self) -> None:
         """
         Sets loglevel to eiter DEBUG or ERROR
         """
@@ -88,7 +92,7 @@ class OsxHarvey:
         else:
             self.loglevel = logging.ERROR
 
-    def __init_logger(self):
+    def __init_logger(self) -> None:
         """
         Initializes the logger
         """
@@ -103,7 +107,7 @@ class OsxHarvey:
         self.logger = logging.getLogger()
         self.logger.addHandler(handler)
 
-    def __ensure_unique(self, filename):
+    def __ensure_unique(self, filename: str) -> None:
         """
         Ensure that entries are unique if the file already exists. This is intended to combine data collected over
         multiple occasions without duplications.
@@ -123,7 +127,7 @@ class OsxHarvey:
             outfile.close()
             os.remove(file_to_clean)
 
-    def pktIdentifier(self, pkt):
+    def pktIdentifier(self, pkt: Packet) -> None:
         """
         Callback function for the sniffer. Calls different parsers as required.
 
@@ -139,7 +143,7 @@ class OsxHarvey:
         if pkt.haslayer(Dot11):
             self.__scan_Dot11(pkt)
 
-    def __scan_Dot11(self, pkt):
+    def __scan_Dot11(self, pkt: Packet) -> None:
         """
         Extracts MAC address from Dot11 packet and queries OuiLookup for vendor information. Writes the collected
         information to list and, if enabled, to file.
@@ -160,7 +164,7 @@ class OsxHarvey:
                     )
                 self.vendor_list.append(vendor)
 
-    def __scan_Dot11ProbeReq(self, pkt):
+    def __scan_Dot11ProbeReq(self, pkt: Packet) -> None:
         """
         Extracts the MAC and name of the net from collected Dot11ProbeRequests. The information is then written to
         list and, inf enabled, to file.
@@ -189,7 +193,7 @@ class OsxHarvey:
                     with open("probes.txt", "a") as probefile:
                         probefile.write(f"unknown -> {netName}\n")
 
-    def __scan_Dot11ProbeResp(self, pkt):
+    def __scan_Dot11ProbeResp(self, pkt: Packet) -> None:
         """
         Tries to extract the name of a network previously detected as hidden from a Dot11ProbeResponse
 
@@ -208,7 +212,7 @@ class OsxHarvey:
                     decloaked_file.write(f"{netName} -> {addr2}\n")
             self.unhiddenNets.append(addr2)
 
-    def __scan_Dot11Beacon(self, pkt):
+    def __scan_Dot11Beacon(self, pkt: Packet) -> None:
         """
         Extracts SSID and MAC from a Dot11Beacon frame. The collected data is then written to list and, if enabled,
         to file.
@@ -235,7 +239,7 @@ class OsxHarvey:
                         ssid_file.write(f"HIDDEN -> {addr2}\n")
                 self.hiddenNets.append(addr2)
 
-    def __print_over_pbar(self, message):
+    def __print_over_pbar(self, message: str) -> None:
         """
         Helper function to print text above the progress bar
 
@@ -249,7 +253,7 @@ class OsxHarvey:
             self.pbar.write(border)
             time.sleep(0.1)
 
-    def start_scanning(self):
+    def start_scanning(self) -> dict[str, Union[list, bool]]:
         """
         Disconnects the Mac from any Wifi network, starts the scanner and returns a dict with the collected data.
 
@@ -309,7 +313,7 @@ class OsxHarvey:
             "ssids": self.ssids,
         }
 
-    def __write_vendors(self):
+    def __write_vendors(self) -> None:
         """
         Writes list of vendors to file
 
@@ -322,7 +326,7 @@ class OsxHarvey:
                         if mac_vendor[mac] is not None:
                             vendor_file.write(mac_vendor[mac] + "\n")
 
-    def update_ouilookup_data(self):
+    def update_ouilookup_data(self) -> None:
         """
         Updates new oui lookup data from standards-oui.iee.org.
         It's not necessary to run this every time osxharvey is used, but should be run
@@ -332,7 +336,7 @@ class OsxHarvey:
         OuiLookup().update()
         self.verboseprint("[+] Successfully updated oui lookup data")
 
-    def __cleanup(self):
+    def __cleanup(self) -> None:
         """
         Performs cleanup operations after successful scan
 
@@ -343,4 +347,3 @@ class OsxHarvey:
         self.__ensure_unique("probes.txt")
         self.__ensure_unique("decloaked.txt")
         self.__ensure_unique("ssids.txt")
-
