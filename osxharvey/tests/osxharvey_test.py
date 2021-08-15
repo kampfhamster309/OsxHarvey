@@ -10,19 +10,18 @@ class TestOsxHarvey(unittest.TestCase):
         addr2=b'aa:bb:cc:11:22:33',
         addr3=b'dd:ee:ff:11:22:33',
     )
+    bwr = OsxHarvey()
 
     def test_parser_dot11probereq(self):
         packet = fuzz(Dot11() / Dot11ProbeReq() / Dot11Elt())
-        bwr = OsxHarvey()
-        bwr.pktIdentifier(packet)
-        length = len(bwr.probe_req)
+        self.bwr.pktIdentifier(packet)
+        length = len(self.bwr.probe_req)
         self.assertEqual(length, 1)
 
     def test_parser_dot11beacon(self):
         packet = fuzz(Dot11() / Dot11Beacon() / Dot11Elt())
-        bwr = OsxHarvey()
-        bwr.pktIdentifier(packet)
-        length = len(bwr.ssids_list)
+        self.bwr.pktIdentifier(packet)
+        length = len(self.bwr.ssids_list)
         self.assertEqual(length, 1)
 
 
