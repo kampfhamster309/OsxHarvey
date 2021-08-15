@@ -106,7 +106,10 @@ def __scan_Dot11Beacon(self, pkt: Packet) -> None:
             self.hiddenNets.append(addr2)
 
 
-def setup_dot11_event_handlers():
+def setup_dot11_event_handlers() -> None:
+    """
+    Subscribes different handlers/parsers for different types of Dot11 layers
+    """
     subscribe("Dot11", __scan_Dot11)
     subscribe("Dot11ProbeReq", __scan_Dot11ProbeReq)
     subscribe("Dot11ProbeResp", __scan_Dot11ProbeResp)
