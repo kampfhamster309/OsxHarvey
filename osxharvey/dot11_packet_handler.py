@@ -90,8 +90,11 @@ def __scan_Dot11Beacon(rabbit_instance, pkt: Packet) -> None:
     ssid_info = pkt.getlayer(Dot11Beacon).info.decode("utf-8", errors="ignore", )
     if ssid_info not in rabbit_instance.ssids_list:
         addr2 = pkt.getlayer(Dot11).addr2
-        stats = pkt[Dot11Beacon].network_stats()
-        crypto = stats.get("crypto")
+        try:
+            stats = pkt[Dot11Beacon].network_stats()
+            crypto = stats.get("crypto")
+        except:
+            crypto = "N/A"
         try:
             signal_strength = pkt[Dot11].dBm_AntSignal
         except:
