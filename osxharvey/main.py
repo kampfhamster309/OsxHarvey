@@ -11,7 +11,7 @@ import sys
 import logging
 import platform
 
-from osxharvey.dot11_packet_handler import setup_dot11_event_handlers
+from osxharvey.dot11_packet_handler import setup_dot11_event_handlers, harvey_instance
 from osxharvey.event import post_event
 
 
@@ -75,6 +75,7 @@ class OsxHarvey:
         self.__set_loglevel()
         self.__init_logger()
         self.__init_handler()
+        self.harvey_instance = self
         if verbose:
 
             def verboseprint(*args, **kwargs) -> None:
@@ -147,7 +148,7 @@ class OsxHarvey:
             post_event(type(layer).__name__, self, pkt)
             counter += 1
 
-    def __print_over_pbar(self, message: str) -> None:
+    def print_over_pbar(self, message: str) -> None:
         """
         Helper function to print text above the progress bar
 
@@ -195,7 +196,7 @@ class OsxHarvey:
                     )
                     try:
                         if self.verbose:
-                            self.__print_over_pbar(
+                            self.print_over_pbar(
                                 f"[*] Round {rounds + 1}: Sniffing on Channel {channel}"
                             )
                         sniff(
@@ -211,8 +212,8 @@ class OsxHarvey:
         except Exception as e:
             self.logger.error(e)
         if self.vendors:
-            self.__write_vendors()
-        self.__cleanup()
+            self.write_vendors()
+        self.cleanup()
         return {
             "vendors": self.vendor_list,
             "probes": self.probe_req,
@@ -221,7 +222,7 @@ class OsxHarvey:
             "ssids": self.ssids,
         }
 
-    def __write_vendors(self) -> None:
+    def write_vendors(self) -> None:
         """
         Writes list of vendors to file
 
@@ -244,7 +245,7 @@ class OsxHarvey:
         OuiLookup().update()
         self.verboseprint("[+] Successfully updated oui lookup data")
 
-    def __cleanup(self) -> None:
+    def cleanup(self) -> None:
         """
         Performs cleanup operations after successful scan
 
