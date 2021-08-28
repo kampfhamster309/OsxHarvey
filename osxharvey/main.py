@@ -11,8 +11,17 @@ import sys
 import logging
 import platform
 
-from osxharvey.dot11_packet_handler import setup_dot11_event_handlers, harvey_instance
+from osxharvey.dot11_packet_handler import setup_dot11_event_handlers
 from osxharvey.event import post_event
+
+
+def check_compatibility():
+    if platform.system() != "Darwin":
+        sys.exit("[!!] OsxHarvey only runs on Mac! Aborting...")
+    if os.geteuid() != 0:
+        sys.exit(
+            "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
+        )
 
 
 class OsxHarvey:
@@ -168,12 +177,7 @@ class OsxHarvey:
 
         :return: Dictionary with collected data
         """
-        if platform.system() != "Darwin":
-            sys.exit("[!!] OsxHarvey only runs on Mac! Aborting...")
-        if os.geteuid() != 0:
-            sys.exit(
-                "[!!] OsxHarvey uses scapy under the hood and therefore needs sudo privileges to run."
-            )
+        check_compatibility()
         try:
             os.system(
                 f"sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current"

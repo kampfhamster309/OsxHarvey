@@ -1,8 +1,9 @@
-from .main import OsxHarvey
+from .main import OsxHarvey, check_compatibility
 import sys
 
 
 def main(args=None):
+    check_compatibility()
     harvey = """
        _
       (\\\\

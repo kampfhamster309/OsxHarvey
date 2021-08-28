@@ -4,7 +4,6 @@ from scapy.packet import Packet
 
 from osxharvey.event import subscribe
 
-harvey_instance = None
 
 
 def __scan_Dot11(rabbit_instance, pkt: Packet) -> None:
