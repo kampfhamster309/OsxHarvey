@@ -5,7 +5,6 @@ from scapy.packet import Packet
 from osxharvey.event import subscribe
 
 
-
 def __scan_Dot11(rabbit_instance, pkt: Packet) -> None:
     """
     Extracts MAC address from Dot11 packet and queries OuiLookup for vendor information. Writes the collected
@@ -99,7 +98,8 @@ def __scan_Dot11Beacon(rabbit_instance, pkt: Packet) -> None:
         except:
             signal_strength = "N/A"
         if rabbit_instance.verbose:
-            rabbit_instance.print_over_pbar(f"[+] Found new SSID {ssid_info} -> {addr2} : {signal_strength} using {crypto}")
+            rabbit_instance.print_over_pbar(
+                f"[+] Found new SSID {ssid_info} -> {addr2} : {signal_strength} using {crypto}")
         if rabbit_instance.ssids:
             with open("ssids.txt", "a") as ssidsf:
                 ssidsf.write(f"{ssid_info} -> {addr2}\n : {signal_strength} {crypto}")

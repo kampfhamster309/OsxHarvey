@@ -24,6 +24,18 @@ class TestOsxHarvey(unittest.TestCase):
         length = len(self.bwr.ssids_list)
         self.assertEqual(length, 1)
 
+    def test_parser_dot11beacon_multiple_ssids(self):
+        packet = fuzz(Dot11() / Dot11Beacon() / Dot11Elt(ID=0, info="test1") / Dot11Elt(ID=1, info="test2"))
+        self.bwr.pktIdentifier(packet)
+        length = len(self.bwr.ssids_list)
+        self.assertEqual(length, 2)
+
+    def test_parser_dot11probereq_multiple_ssids(self):
+        packet = fuzz(Dot11() / Dot11ProbeReq() / Dot11Elt(ID=0, info="test1") / Dot11Elt(ID=1, info="test2"))
+        self.bwr.pktIdentifier(packet)
+        length = len(self.bwr.ssids_list)
+        self.assertEqual(length, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
