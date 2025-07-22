@@ -1,4 +1,4 @@
 ouilookup==0.2.4
 scapy==2.4.5
-tqdm==4.61.0
+tqdm==4.66.3
 pytest==6.2.4
